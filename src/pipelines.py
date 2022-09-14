@@ -5,12 +5,12 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from models.models import ChirodirectoryModel
-from models.sessions import session
+from src.db.models import ChirodirectoryModel
+from src.db.sessions import session
 
 
 class SQLAlchemyPipeline(object):
-    """Pipeline to save jokes to mysql database"""
+    """Pipeline to save jokes to mysql database."""
 
     def close_spider(self, spider):
         session.close()

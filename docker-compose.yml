@@ -2,32 +2,26 @@ version: '3.1'
 
 volumes:
   chir_local_postgres_data: {}
-  chir_local_postgres_data_backups: {}
 services:
     postgres:
       ports:
         - 15432:5432
-      build:
-        context: .
-        dockerfile: ./compose/production/postgres/Dockerfile
-      image: chir_production_postgres
-      container_name: chir_production_postgres
+      image: postgres:14
+      container_name: chir_postgres
       volumes:
-        - chir_local_postgres_data:/var/lib/postgresql/data:Z
-        - chir_local_postgres_data_backups:/backups:z
+        - chir_postgres_data:/var/lib/postgresql/data:Z
       env_file:
-        - ./envs/local/db
+        - ./envs/local.env
     scrapy:
       image: chir_scrapy
       container_name: chir_scrapy
-      ports:
-        - "5000:5000"
-        - "6800:6800"
-        - "6023:6023"
-      working_dir: /app
       build:
         context: .
-        dockerfile: ./compose/local/scrapy/Dockerfile
-      command: scrapyd
+      ports:
+        - 6023:6023
+      env_file:
+        - envs/local.env
+      working_dir: /app
+      command: sleep 100500
       volumes:
         - ./:/app

@@ -11,22 +11,3 @@ Scraper for https://www.chirodirectory.com/chiropractors/
 
 
 * Free software: MIT license
-
-
-Basic Commands
---------------
-
-Install project dependencies
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    $ ./dev.sh
-
-Start containers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    $ docker-compose up
-
-Run spider by Crawl process
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    $ docker-compose run -w /app/chir/spiders/ scrapy python3 chir.py
