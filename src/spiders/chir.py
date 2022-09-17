@@ -2,7 +2,7 @@ import scrapy
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from src.items import ChirodirectoryItem
+from src.spiders.pages.profiled import ProfiledPage
 
 settings = get_project_settings()
 
@@ -33,37 +33,30 @@ class Chir(scrapy.Spider):
     def browse_state(self, response):
         links = response.xpath('//div[@class="cols-4"]/div/*/a/@href').getall()
         for link in links:
-            yield scrapy.Request(
-                url=("https://www.chirodirectory.com" + link),
+            yield response.follow(
+                url=link,
                 headers=HEADERS,
                 callback=self.browse_in_state,
             )
-            self.logger.info("link: {}".format(BASE_URL + link))
 
     def browse_in_state(self, response):
         links = response.xpath('//div[@class="cols-3"]/div/*/a/@href').getall()
         for link in links:
-            yield scrapy.Request(
-                url=("https://www.chirodirectory.com" + link),
+            yield response.follow(
+                url=link,
                 headers=HEADERS,
-                callback=self.find_Profiled,
+                callback=self.find_profiled,
             )
-            self.logger.info("link: {}".format(BASE_URL + link))
 
-    def find_Profiled(self, response):
+    def find_profiled(self, response):
         links = response.xpath('//div[@class="results profiled-results"]/div/a/@href').getall()
         if links is not None:
             for link in links:
-                yield scrapy.Request(url=("https://www.chirodirectory.com" + link), callback=self.parse)
-                self.logger.info("link: {}".format(BASE_URL + link))
+                yield response.follow(url=link, callback=self.parse)
 
     def parse(self, response):
-        item = ChirodirectoryItem()
-        item["title"] = response.css("h1::text").getall() or ""
-        item["mail"] = response.xpath("//span/a[@href]").re(r'mailto:(.*@*)"') or ""
-        item["site"] = response.xpath("//span/a[@href]").re(r'http.*://(.*)"') or ""
-        item["info"] = response.xpath('//div[@class="cols-2"]/div[@class="col"]/p/text()').getall()[:4] or ""
-        yield item
+        page = ProfiledPage.from_response(response)
+        yield page.to_item()
 
 
 if __name__ == "__main__":

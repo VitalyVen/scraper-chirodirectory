@@ -1,7 +1,7 @@
 version: '3.1'
 
 volumes:
-  chir_local_postgres_data: {}
+  chir_postgres_data: {}
 services:
     postgres:
       ports:
