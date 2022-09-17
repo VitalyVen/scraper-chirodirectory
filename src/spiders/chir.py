@@ -55,7 +55,7 @@ class Chir(scrapy.Spider):
                 yield response.follow(url=link, callback=self.parse)
 
     def parse(self, response):
-        page = ProfiledPage.from_response(response)
+        page = ProfiledPage(response)
         yield page.to_item()
 
 

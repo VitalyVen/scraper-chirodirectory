@@ -11,5 +11,5 @@ class ItemWebPage:
     def __getattr__(self, item: str):
         return getattr(self.response, item)
 
-    def to_item(self) -> scrapy.Item | dict | dataclasses.dataclass:
+    def to_item(self) -> scrapy.Item:
         raise NotImplementedError()
